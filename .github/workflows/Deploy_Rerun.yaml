@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: test
+        run: echo "${{ github.event.workflow_run.name }}"
+
       - name: Clean old run log
         id: clean_old_run
         env:
