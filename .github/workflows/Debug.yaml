@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Debug
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           docker --version
+          export
           gh workflow list
