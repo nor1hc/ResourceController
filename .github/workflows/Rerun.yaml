@@ -1,4 +1,4 @@
-name: Deploy_Rerun
+name: Rerun
 
 on:
   workflow_run:
@@ -28,18 +28,7 @@ jobs:
           WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${GITHUB_WORKFLOW}\") | .id")
 
           gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
-            | jq -r --arg CURRENT_RUN_ID "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != ($CURRENT_RUN_ID | tonumber) and (.status == "in_progress" or .status == "queued")) | .id' \
-            | while read -r RUN_ID; do
-                echo "Cancelling workflow run ID: $RUN_ID"
-                if gh api -X POST "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/cancel"; then
-                  echo "Successfully cancelled workflow run ID: $RUN_ID"
-                else
-                  echo "Failed to cancel workflow run ID: $RUN_ID"
-                fi
-            done
-
-          gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
-            | jq -r --arg CURRENT_RUN_ID "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != ($CURRENT_RUN_ID | tonumber)) | .id' \
+            | jq -r --arg CURRENT_RUN_ID "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != ($CURRENT_RUN_ID | tonumber) and .status != "in_progress" and .status != "queued") | .id' \
             | while read -r RUN_ID; do
                 echo "Deleting workflow run ID: $RUN_ID"
                 gh api -X DELETE "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" && \
@@ -51,7 +40,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
           GITHUB_API_URL: https://api.github.com
-          WORKFLOW_NAME: Deploy
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           API_URL=${GITHUB_API_URL:-"https://api.github.com"}
           WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
