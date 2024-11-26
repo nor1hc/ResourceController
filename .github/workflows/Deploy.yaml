@@ -62,6 +62,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Clean offline runners
+        env:
+          REPO_URL: ${{ secrets.GH_REPO }}
+          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GITHUB_API_URL: https://api.github.com
+        run: |
+          OWNER=$(basename $(dirname $REPO_URL)); REPO=$(basename $REPO_URL)
+          gh api ${API_URL}/repos/$OWNER/$REPO/actions/runners | jq -r '.runners[] | select(.status=="offline").id' \
+          | xargs -I{} gh api -X DELETE ${API_URL}/repos/$OWNER/$REPO/actions/runners/{}  
+
       - uses: actions/checkout@v4
 
       - name: Deploy compose
