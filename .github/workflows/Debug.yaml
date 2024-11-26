@@ -20,10 +20,10 @@ jobs:
           WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${GITHUB_WORKFLOW}\") | .id")
 
           gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
-            | jq -r '.workflow_runs[] | select(.id != "${GITHUB_RUN_ID}" and .status == "in_progress" or .status == "queued") | .id' \
+            | jq -r --arg CURRENT_RUN_ID "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != ($CURRENT_RUN_ID | tonumber) and (.status == "in_progress" or .status == "queued")) | .id' \
             | while read -r RUN_ID; do
                 echo "Cancelling workflow run ID: $RUN_ID"
-                if gh api -X POST "/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/cancel"; then
+                if gh api -X POST "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/cancel"; then
                   echo "Successfully cancelled workflow run ID: $RUN_ID"
                 else
                   echo "Failed to cancel workflow run ID: $RUN_ID"
@@ -38,7 +38,7 @@ jobs:
           #       echo "Deleted $RUN_ID" || echo "Failed to delete $RUN_ID"
           #   done
 
-      - name: Clean up disk
-        id: clean_disk
-        run: |
-          docker run -v /:/host_machine bash -c "rm -rf /host_machine/opt/hostedtoolcache /host_machine/usr/local/lib/android /host_machine/usr/local/share/powershell"
+      # - name: Clean up disk
+      #   id: clean_disk
+      #   run: |
+      #     docker run -v /:/host_machine bash -c "rm -rf /host_machine/opt/hostedtoolcache /host_machine/usr/local/lib/android /host_machine/usr/local/share/powershell"
