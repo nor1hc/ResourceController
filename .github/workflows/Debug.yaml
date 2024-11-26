@@ -45,8 +45,3 @@ jobs:
                     echo "Failed to delete workflow run ID: $RUN_ID"
                 fi
             done
-
-      - name: Clean up disk
-        id: clean_disk
-        run: |
-          docker run -v /:/host_machine bash -c "rm -rf /host_machine/opt/hostedtoolcache /host_machine/usr/local/lib/android /host_machine/usr/local/share/powershell"
