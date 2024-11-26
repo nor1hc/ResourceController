@@ -48,7 +48,7 @@ runs:
         docker system prune -a -f
 
         if [ "${{ inputs.pull_image }}" == "true" ]; then
-          docker compose pull
+          docker compose pull > /dev/null
         fi
 
         docker compose -f ${{ inputs.compose_file }} up -d
@@ -131,4 +131,4 @@ runs:
       run: |
         cd ${{ github.workspace }}
         cd ${{ inputs.base_path }}
-        docker compose -f ${{ inputs.compose_file }} down
+        docker compose -f ${{ inputs.compose_file }} down -v
