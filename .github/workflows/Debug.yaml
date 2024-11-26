@@ -20,7 +20,7 @@ jobs:
           WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${GITHUB_WORKFLOW}\") | .id")
 
           gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
-            | jq -r '.workflow_runs[] | select(.id != $GITHUB_RUN_ID and .status == "in_progress" or .status == "queued") | .id' \
+            | jq -r '.workflow_runs[] | select(.id != ${GITHUB_RUN_ID} and .status == "in_progress" or .status == "queued") | .id' \
             | while read -r RUN_ID; do
                 echo "Cancelling workflow run ID: $RUN_ID"
                 if gh api -X POST "/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/cancel"; then
