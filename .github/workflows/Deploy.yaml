@@ -82,5 +82,4 @@ jobs:
         uses: ./.github/actions/compose
         with:
           base_path: compose
-          scan: false
           skip_composedown: true

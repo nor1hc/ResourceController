@@ -56,12 +56,12 @@ jobs:
       #     gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" | jq -e '.workflow_runs[] | select(.status == "in_progress")' >/dev/null && echo "Running workflows detected. Exiting." && exit 1 || echo "No running workflows found."
       #     gh api -X POST "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_NAME}.yaml/dispatches" -F ref=main
 
-      - name: Clean offline runners
-        env:
-          REPO_URL: ${{ secrets.GH_REPO }}
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-          GITHUB_API_URL: https://api.github.com
-        run: |
-          OWNER=$(basename $(dirname $REPO_URL)); REPO=$(basename $REPO_URL)
-          gh api ${API_URL}/repos/$OWNER/$REPO/actions/runners | jq -r '.runners[] | select(.status=="offline").id' \
-          | xargs -I{} gh api -X DELETE ${API_URL}/repos/$OWNER/$REPO/actions/runners/{}  
+      # - name: Clean offline runners
+      #   env:
+      #     REPO_URL: ${{ secrets.GH_REPO }}
+      #     GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #     GITHUB_API_URL: https://api.github.com
+      #   run: |
+      #     OWNER=$(basename $(dirname $REPO_URL)); REPO=$(basename $REPO_URL)
+      #     gh api ${API_URL}/repos/$OWNER/$REPO/actions/runners | jq -r '.runners[] | select(.status=="offline").id' \
+      #     | xargs -I{} gh api -X DELETE ${API_URL}/repos/$OWNER/$REPO/actions/runners/{}  

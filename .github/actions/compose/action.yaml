@@ -1,10 +1,6 @@
 name: docker Image compose test
 description: docker Image compose test
 inputs:
-  docker_host:
-    description: 'DOCKER_HOST if set remote ex: "tcp://HOST:2375" or "unix:///var/run/docker.sock" or "ssh://me@example.com:22/var/run/docker.sock"'
-    required: false
-    default: unix:///var/run/docker.sock
   base_path:
     description: base path will be src
     required: false
@@ -25,13 +21,6 @@ inputs:
     description: pull image before test
     required: false
     default: true
-  scan:
-    description: security scan all image in compose
-    required: false
-    default: true
-  trivy_path:
-    description: trivy config path
-    required: false
   skip_composedown:
     description: deploy mode will skip compose down
     required: false
