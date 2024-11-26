@@ -30,13 +30,13 @@ jobs:
                 fi
             done
 
-          # gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
-          #   | jq -r '.workflow_runs[] | select(.id != $GITHUB_RUN_ID) | .id' \
-          #   | while read -r RUN_ID; do
-          #       echo "Deleting workflow run ID: $RUN_ID"
-          #       gh api -X DELETE "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" && \
-          #       echo "Deleted $RUN_ID" || echo "Failed to delete $RUN_ID"
-          #   done
+          gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" \
+            | jq -r --arg CURRENT_RUN_ID "$GITHUB_RUN_ID" '.workflow_runs[] | select(.id != ($CURRENT_RUN_ID | tonumber)) | .id' \
+            | while read -r RUN_ID; do
+                echo "Deleting workflow run ID: $RUN_ID"
+                gh api -X DELETE "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" && \
+                echo "Deleted $RUN_ID" || echo "Failed to delete $RUN_ID"
+            done
 
       # - name: Clean up disk
       #   id: clean_disk
