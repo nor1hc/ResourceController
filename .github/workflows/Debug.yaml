@@ -24,3 +24,20 @@ jobs:
 
           echo "Workflow Runs:"
           echo "$WORKFLOW_RUNS"
+          # Loop through each workflow run
+          echo "$WORKFLOW_RUNS" | while read -r RUN; do
+            RUN_ID=$(echo "$RUN" | jq -r '.id')
+            STATUS=$(echo "$RUN" | jq -r '.status')
+            CONCLUSION=$(echo "$RUN" | jq -r '.conclusion')
+
+            # Skip running workflows
+            if [[ "$STATUS" == "in_progress" || "$STATUS" == "queued" ]]; then
+              echo "Skipping running workflow run: $RUN_ID"
+              continue
+            fi
+
+            # Delete the non-running workflow run
+            echo "Deleting workflow run: $RUN_ID (Status: $STATUS, Conclusion: $CONCLUSION)"
+            gh api -X DELETE "/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" \
+              && echo "Deleted workflow run: $RUN_ID"
+          done
