@@ -58,35 +58,8 @@ jobs:
 
       - name: Clean offline runners
         env:
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-          GITHUB_API_URL: https://api.github.com
+          REPO_URL: ${{ secrets.GH_REPO }}
         run: |
-          # Replace with your repository details
-          OWNER="nor1hc"
-          REPO="private-repo"
-
-          # List all runners
-          RUNNERS=$(gh api -H "Accept: application/vnd.github+json" \
-            /repos/$OWNER/$REPO/actions/runners | jq -r '.runners[] | @base64')
-
-          # Loop through each runner
-          for RUNNER in $RUNNERS; do
-            # Decode runner details
-            RUNNER_DATA=$(echo "$RUNNER" | base64 --decode)
-            
-            # Extract runner ID and status
-            RUNNER_ID=$(echo "$RUNNER_DATA" | jq -r '.id')
-            RUNNER_NAME=$(echo "$RUNNER_DATA" | jq -r '.name')
-            RUNNER_STATUS=$(echo "$RUNNER_DATA" | jq -r '.status')
-
-            # Check if the runner is offline
-            if [[ "$RUNNER_STATUS" == "offline" ]]; then
-              echo "Deleting offline runner: $RUNNER_NAME (ID: $RUNNER_ID)"
-              
-              # Delete the runner
-              gh api -X DELETE -H "Accept: application/vnd.github+json" \
-                /repos/$OWNER/$REPO/actions/runners/$RUNNER_ID
-              
-              echo "Deleted runner: $RUNNER_NAME (ID: $RUNNER_ID)"
-            fi
-          done
+          OWNER=$(basename $(dirname $REPO_URL)); REPO=$(basename $REPO_URL)
+          gh api /repos/$OWNER/$REPO/actions/runners | jq -r '.runners[] | select(.status=="offline").id' \
+          | xargs -I{} gh api -X DELETE /repos/$OWNER/$REPO/actions/runners/{}
