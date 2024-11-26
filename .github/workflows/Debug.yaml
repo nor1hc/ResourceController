@@ -62,8 +62,8 @@ jobs:
           GITHUB_API_URL: https://api.github.com
         run: |
           # Replace with your repository details
-          OWNER="<owner>"
-          REPO="<repo>"
+          OWNER="nor1hc"
+          REPO="private-repo"
 
           # List all runners
           RUNNERS=$(gh api -H "Accept: application/vnd.github+json" \
