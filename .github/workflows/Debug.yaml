@@ -12,6 +12,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
-          docker --version
-          export
           gh workflow list
+          # Fetch the workflow ID using GitHub CLI
+          WORKFLOW_ID=$(gh api "/repos/${GITHUB_REPOSITORY}/actions/workflows" \
+            | jq -r ".workflows[] | select(.name == \"${GITHUB_WORKFLOW}\") | .id")
+
+          echo "Current Workflow ID: $WORKFLOW_ID"
