@@ -18,3 +18,9 @@ jobs:
             | jq -r ".workflows[] | select(.name == \"${GITHUB_WORKFLOW}\") | .id")
 
           echo "Current Workflow ID: $WORKFLOW_ID"
+          # Fetch workflow runs
+          WORKFLOW_RUNS=$(gh api "/repos/${REPO}/actions/workflows/${WORKFLOW_ID}/runs" \
+            | jq '.workflow_runs[] | {id: .id, status: .status, conclusion: .conclusion, created_at: .created_at}')
+
+          echo "Workflow Runs:"
+          echo "$WORKFLOW_RUNS"
