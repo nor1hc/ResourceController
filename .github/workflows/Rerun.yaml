@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - Deploy
+      - Deploy_1
     types:
       - completed
     branches:
