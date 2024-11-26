@@ -58,10 +58,10 @@ runs:
         fi
 
         # Timeout in seconds
-        TIMEOUT=${{ inputs.timeout:-300 }}
+        TIMEOUT=${{ inputs.timeout }}
         START_TIME=$(date +%s)
         END_TIME=$((START_TIME + TIMEOUT))
-        SLEEP_INTERVAL=${{ inputs.sleep_interval:-5 }}
+        SLEEP_INTERVAL=5
 
         # Function to check health status of all services
         check_services_status() {
