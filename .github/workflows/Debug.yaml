@@ -43,15 +43,17 @@ jobs:
       #   run: |
       #     docker run -v /:/host_machine bash -c "rm -rf /host_machine/opt/hostedtoolcache /host_machine/usr/local/lib/android /host_machine/usr/local/share/powershell"
 
-      - name: Check have running workflow
-        id: check_running_workflow
-        env:
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-          GITHUB_API_URL: https://api.github.com
-          WORKFLOW_NAME: Deploy
-        run: |
-          API_URL=${GITHUB_API_URL:-"https://api.github.com"}
-          WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
+      # - name: Check have running workflow
+      #   id: check_running_workflow
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #     GITHUB_API_URL: https://api.github.com
+      #     WORKFLOW_NAME: Deploy
+      #   run: |
+      #     API_URL=${GITHUB_API_URL:-"https://api.github.com"}
+      #     WORKFLOW_ID=$(gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows" | jq -r ".workflows[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
 
-          gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" | jq -e '.workflow_runs[] | select(.status == "in_progress")' >/dev/null && echo "Running workflows detected. Exiting." && exit 1 || echo "No running workflows found."
-          gh api -X POST "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_NAME}.yaml/dispatches" -F ref=main
+      #     gh api "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs" | jq -e '.workflow_runs[] | select(.status == "in_progress")' >/dev/null && echo "Running workflows detected. Exiting." && exit 1 || echo "No running workflows found."
+      #     gh api -X POST "${API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/${WORKFLOW_NAME}.yaml/dispatches" -F ref=main
+
+      
