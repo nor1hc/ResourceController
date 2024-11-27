@@ -78,7 +78,7 @@ jobs:
         env:
           REPO_URL: ${{ secrets.GH_REPO_TARGET_1 }}
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN_TARGET_1 }}
-          GITHUB_HOST: ${{ secrets.GITHUB_HOST_TARGET_1 }}
+          GITHUB_HOST: ${{ secrets.GH_HOST_TARGET_1 }}
         uses: ./.github/actions/compose
         with:
           base_path: compose
