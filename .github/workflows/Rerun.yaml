@@ -5,6 +5,7 @@ on:
     workflows:
       - Deploy
       - Deploy_1
+      - Deploy_2
     types:
       - completed
     branches:
