@@ -3,6 +3,9 @@ services:
     image: ledanghuy/workspace:github_runner_ubuntu2204-minimal
     environment:
       - LABELS=github_runner_ubuntu2204,free
+      - REPO_URL=${REPO_URL}
+      - ACCESS_TOKEN=${GH_ACCESS_TOKEN}
+      - GITHUB_HOST=${GH_HOST}
     deploy:
       mode: replicated
       replicas: 1
