@@ -60,7 +60,6 @@ runs:
 
             for service in $services; do
                 health_status=$(docker inspect --format='{{.State.Health.Status}}' "$(docker compose ps -q $service)" 2>/dev/null)
-                echo "Service: $service, Health Status: ${health_status:-no-healthcheck}"
 
                 if [ "$health_status" = "" ]; then
                     continue
