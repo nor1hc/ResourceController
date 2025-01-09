@@ -6,7 +6,7 @@ on:
       - Deploy
       - Deploy_1
       - Deploy_2
-      - Deploy_3
+      # - Deploy_3
     types:
       - completed
     branches:
