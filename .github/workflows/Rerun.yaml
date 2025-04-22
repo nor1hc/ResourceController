@@ -7,6 +7,7 @@ on:
       - Deploy_1
       - Deploy_2
       - Deploy_3
+      - Deploy_5
     types:
       - completed
     branches:
